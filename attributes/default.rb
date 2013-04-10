@@ -31,6 +31,7 @@ default[:cassandra] = {
   :heap_new_size    => nil,
   :vnodes           => false,
   :seeds            => [],
+  :seeds_by_role    => false,
   :concurrent_reads => 32,
   :concurrent_writes => 32,
   :snitch           => 'SimpleSnitch'
