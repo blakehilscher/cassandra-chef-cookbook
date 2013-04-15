@@ -39,6 +39,15 @@ package "dsc12" do
   action :install
 end
 
+%w(cassandra.yaml cassandra-env.sh).each do |f|
+  template File.join(node["cassandra"]["conf_dir"], f) do
+    source "#{f}.erb"
+    owner node["cassandra"]["user"]
+    group node["cassandra"]["user"]
+    mode  0644
+  end
+end
+
 service "cassandra" do
   supports :restart => true, :status => true
   action [:enable, :start]
