@@ -21,6 +21,7 @@ default[:cassandra] = {
   :bin_dir          => "/usr/local/cassandra/bin",
   :lib_dir          => "/usr/local/cassandra/lib",
   :conf_dir         => "/etc/cassandra/",
+  :data_dir         => false,
   # commit log, data directory, saved caches and so on are all stored under the data root. MK.
   :data_root_dir    => "/var/lib/cassandra/",
   :commitlog_dir    => "/var/lib/cassandra/",
