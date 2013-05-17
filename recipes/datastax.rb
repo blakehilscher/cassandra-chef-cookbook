@@ -49,6 +49,15 @@ directory node.cassandra.data_root_dir do
   action :create
 end
 
+bash "ensure correct permissions on data_root_dir, commitlog_dir, log_dir" do
+  user "root"
+  code [
+    "chown -R #{node.cassandra.user}:#{node.cassandra.user} #{node.cassandra.data_root_dir}",
+    "chown -R #{node.cassandra.user}:#{node.cassandra.user} #{node.cassandra.commitlog_dir}",
+    "chown -R #{node.cassandra.user}:#{node.cassandra.user} #{node.cassandra.log_dir}",
+  ].join(';')
+end
+
 seeds = search(:node, "role:#{node["cassandra"]["seeds_by_role"]} AND chef_environment:#{node.chef_environment} NOT hostname:#{node['hostname']}").collect{|h| h['ipaddress'] } || []
 %w(cassandra.yaml cassandra-env.sh).each do |f|
   template File.join(node["cassandra"]["conf_dir"], f) do
