@@ -8,12 +8,12 @@ if node.cassandra.data_dir
   end
   
   bash "Copy data from data_root_dir to data_dir" do
-    user node.cassandra.user
+    user "root"
     code [
       "cp -r #{node.cassandra.data_root_dir}* #{node.cassandra.data_dir}",
       "mv #{node.cassandra.data_root_dir} #{node.cassandra.data_root_dir.gsub(/\/$/,'')}-#{Time.now.to_i}"
     ].join(';')
-    only_if { File.exist?( node.cassandra.data_root_dir ) and not File.symlink?( node.cassandra.data_root_dir.gsub(/\/$/,'') ) }
+    only_if { File.exist?( node.cassandra.data_root_dir ) && !File.symlink?( node.cassandra.data_root_dir.gsub(/\/$/,'') ) }
   end
   
   bash "link data_dir to data_root_dir" do

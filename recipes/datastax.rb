@@ -33,10 +33,12 @@ end
 # one installed. MK.
 package "python-cql" do
   action :install
+  options("--force-yes")
 end
 
 package "dsc12" do
   action :install
+  options("--force-yes")
 end
 
 seeds = search(:node, "role:#{node["cassandra"]["seeds_by_role"]} AND chef_environment:#{node.chef_environment} NOT hostname:#{node['hostname']}").collect{|h| h['ipaddress'] } || []
