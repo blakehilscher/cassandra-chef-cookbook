@@ -17,6 +17,11 @@ default[:cassandra] = {
     :memlock => 'unlimited',
     :nofile  => 48000
   },
+  topology: {
+    datacenters: {
+      'us-east-1a': 1,
+    },
+  },
   :installation_dir => "/usr/local/cassandra",
   :bin_dir          => "/usr/local/cassandra/bin",
   :lib_dir          => "/usr/local/cassandra/lib",
