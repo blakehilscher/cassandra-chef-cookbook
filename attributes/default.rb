@@ -19,7 +19,7 @@ default[:cassandra] = {
   },
   topology: {
     datacenters: {
-      'us-east-1a': 1,
+      'us-east-1a' => '1',
     },
   },
   :installation_dir => "/usr/local/cassandra",
