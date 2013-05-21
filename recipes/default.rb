@@ -1,2 +1,2 @@
 include_recipe "cassandra::datastax"
-include_recipe "cassandra::topology"
+include_recipe "cassandra::snitch"

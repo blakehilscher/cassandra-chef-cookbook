@@ -3,12 +3,11 @@ if node.cassandra.snitch == 'PropertyFileSnitch'
   cass_nodes = search(:node, "role:quandl_cassandra AND chef_environment:#{node.chef_environment}") || []
   cass_nodes = cass_nodes.group_by{|n| n.ec2.placement_availability_zone }
   cass_nodes = cass_nodes.collect do |zone, cnodes|
-    cnodes.sort_by{|cn| cn.name }.collect do |cnode|
+    cnodes.collect do |cnode|
       # get the datacenter
-      dc = node.cassandra.topology.datacenters[zone].to_i
+      datacenter = node.cassandra.availability_zones[zone]
       # get the rack
-      rack = cnode.name.split('-').last.to_i
-      "#{cnode.ipaddress}=dc#{dc}:rac#{rack}"      
+      "#{cnode.ipaddress}=#{datacenter}:rac1"
     end
   end.flatten
 
