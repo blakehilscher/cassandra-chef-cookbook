@@ -37,7 +37,7 @@ default[:cassandra] = {
   :concurrent_writes => 32,
   :snitch           => 'SimpleSnitch',
   :start_native_transport => true,
-  availability_zones: {
+  :availability_zones => {
     'us-east-1a' => 'dc1',
   }
 }
