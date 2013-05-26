@@ -7,7 +7,8 @@ if node.cassandra.snitch == 'PropertyFileSnitch'
       # get the datacenter
       datacenter = node.cassandra.availability_zones[zone]
       # get the rack
-      "#{cnode.ipaddress}=#{datacenter}:rac1"
+      rack = cnode.name.split('-').last.split('.').first
+      "#{cnode.ipaddress}=#{datacenter}:rac#{rack}"
     end
   end.flatten
 
