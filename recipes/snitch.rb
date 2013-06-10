@@ -17,7 +17,7 @@ if node.cassandra.snitch == 'PropertyFileSnitch'
     owner node.cassandra.user
     group node.cassandra.user
     mode  0644
-    variables cass_nodes: cass_nodes
+    variables :cass_nodes => cass_nodes
   end
   
   service "cassandra" do
