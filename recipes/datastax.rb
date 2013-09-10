@@ -36,6 +36,12 @@ package "python-cql" do
   options("--force-yes")
 end
 
+package "cassandra" do
+  action :install
+  version node.cassandra.version
+  options("--force-yes")
+end
+
 package "dsc12" do
   action :install
   options("--force-yes")
