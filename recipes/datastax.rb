@@ -36,17 +36,11 @@ package "python-cql" do
   options("--force-yes")
 end
 
-package "cassandra" do
-  action :install
-  version node.cassandra.version
-  options("--force-yes")
+bash "install package cassandra" do
+  user "root"
+  code %Q{apt-get -q -y --force-yes install #{node.cassandra.package}=#{node.cassandra.version}-1 cassandra=#{node.cassandra.version} -o Dpkg::Options::="--force-confdef"}
 end
 
-package node.cassandra.package do
-  action :install
-  options("--force-yes")
-end
-  
 # ensure data_root_dir exists
 directory node.cassandra.data_root_dir do
   owner node.cassandra.user
