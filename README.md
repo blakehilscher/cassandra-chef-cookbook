@@ -50,3 +50,17 @@ OracleJDK 7, OpenJDK 7, OpenJDK 6 or Sun JDK 6.
 Michael S. Klishin, Travis CI Development Team, 2012.
 
 Released under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html).
+
+
+## Upgrade from DSC12 to DSC20
+
+add-apt-repository ppa:webupd8team/java
+apt-get update
+apt-get install oracle-java7-installer
+
+rm /etc/profile.d/jdk.sh
+sudo chmod -R +x /usr/lib/jvm/java-7-oracle/
+
+apt-get install dsc20
+
+cassandra -v
