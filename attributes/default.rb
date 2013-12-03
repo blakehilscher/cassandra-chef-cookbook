@@ -3,6 +3,7 @@ cassandra_version = "1.2.9"
 default[:cassandra] = {
   :cluster_name => "Test Cluster",
   :initial_token => "",
+  :package => 'dsc12',
   :version => cassandra_version,
   :tarball => {
     :url => "http://www.eu.apache.org/dist/cassandra/#{cassandra_version}/apache-cassandra-#{cassandra_version}-bin.tar.gz",
