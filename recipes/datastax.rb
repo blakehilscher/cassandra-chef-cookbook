@@ -42,7 +42,7 @@ package "cassandra" do
   options("--force-yes")
 end
 
-package "dsc12" do
+package node.cassandra.package do
   action :install
   options("--force-yes")
 end
@@ -67,7 +67,7 @@ end
 seeds = search(:node, "role:#{node["cassandra"]["seeds_by_role"]} AND chef_environment:#{node.chef_environment} NOT hostname:#{node['hostname']}").collect{|h| h['ipaddress'] } || []
 %w(cassandra.yaml cassandra-env.sh).each do |f|
   template File.join(node["cassandra"]["conf_dir"], f) do
-    source "#{f}.erb"
+    source "#{node.cassandra.package}/#{f}.erb"
     owner node["cassandra"]["user"]
     group node["cassandra"]["user"]
     mode  0644
