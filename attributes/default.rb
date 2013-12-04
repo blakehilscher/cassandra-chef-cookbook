@@ -18,6 +18,12 @@ default[:cassandra] = {
     :memlock => 'unlimited',
     :nofile  => 48000
   },
+  :read_request_timeout_in_ms     => 5000,
+  :range_request_timeout_in_ms    => 10000,
+  :write_request_timeout_in_ms    => 2000,
+  :cas_contention_timeout_in_ms   => 1000,
+  :truncate_request_timeout_in_ms => 60000,
+  
   :installation_dir => "/usr/local/cassandra",
   :bin_dir          => "/usr/local/cassandra/bin",
   :lib_dir          => "/usr/local/cassandra/lib",
