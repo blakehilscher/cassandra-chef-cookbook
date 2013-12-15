@@ -25,3 +25,22 @@ if node.cassandra.snitch == 'PropertyFileSnitch'
   end
   
 end
+
+if node.cassandra.snitch == 'GossipingPropertyFileSnitch'
+  
+  datacenter = node.cassandra.availability_zones[zone]
+  rack = "RAC" + node.name.split('-').last.split('.').first.to_s
+
+  template File.join( node["cassandra"]["conf_dir"], "cassandra-rackdc.properties" ) do
+    source "cassandra-rackdc.properties.erb"
+    owner node.cassandra.user
+    group node.cassandra.user
+    mode  0644
+    variables :datacenter => datacenter, :rack => rack
+  end
+  
+  service "cassandra" do
+    action :restart
+  end
+  
+end
