@@ -1,0 +1,13 @@
+keyspaces=(<%= node.cassandra.backup.keyspaces.join(" ") %>)
+
+DATE=$(date +"%Y-%m-%d")
+
+for keyspace in ${keyspaces[@]}; do
+  nodetool snapshot $keyspace
+  find "/var/lib/cassandra/data/${keyspace}" -maxdepth 1 -type d | while read -r dir; do
+    if [ -d "${dir}/snapshots" ]; then
+      TABLE_NAME=$(basename ${dir})
+      aws s3 sync "${dir}/snapshots" "s3://<%= node.cassandra.backup.bucket_name %>/$DATE/<%= node.name %>/${keyspace}/$TABLE_NAME/"
+    fi
+  done
+done

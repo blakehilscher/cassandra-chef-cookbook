@@ -24,6 +24,11 @@ default[:cassandra] = {
   :cas_contention_timeout_in_ms   => 1000,
   :truncate_request_timeout_in_ms => 60000,
   
+  :backup => {
+    :bucket_name    => 'cassandra-archive',
+    :keyspaces      => ['system'],
+  },
+  
   :installation_dir => "/usr/local/cassandra",
   :bin_dir          => "/usr/local/cassandra/bin",
   :lib_dir          => "/usr/local/cassandra/lib",
