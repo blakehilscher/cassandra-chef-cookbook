@@ -28,7 +28,7 @@ end
 
 if node.cassandra.snitch == 'GossipingPropertyFileSnitch'
   
-  datacenter = node.cassandra.availability_zones[zone]
+  datacenter = node.cassandra.availability_zones[ node.ec2.placement_availability_zone ]
   rack = "RAC" + node.name.split('-').last.split('.').first.to_s
 
   template File.join( node["cassandra"]["conf_dir"], "cassandra-rackdc.properties" ) do
