@@ -20,11 +20,11 @@ directory File.join(node["cassandra"]["conf_dir"], "backup") do
   action :create
 end
 
-template File.join(node["cassandra"]["conf_dir"], "backup/backup.rb") do
-  source "backup/backup.rb.erb"
+template File.join(node["cassandra"]["conf_dir"], "backup/backup.sh") do
+  source "backup/backup.sh.erb"
   owner node["cassandra"]["user"]
   group node["cassandra"]["user"]
-  mode  0644
+  mode  0744
 end
 
 template File.join(node["cassandra"]["conf_dir"], "backup/restore.sh") do

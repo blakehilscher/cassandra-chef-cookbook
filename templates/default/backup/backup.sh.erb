@@ -1,0 +1,28 @@
+<%
+
+data_dir = File.join(node.cassandra.data_root_dir, 'data')
+s3_bucket_url = "s3://#{node.cassandra.backup.bucket_name}"
+keyspaces = node.cassandra.backup.keyspaces
+node_name = node.name
+
+commands = []
+
+keyspaces.each do |keyspace, tables|
+  keyspace_dir = File.join( data_dir, keyspace )
+  
+  commands << "nodetool clearsnapshot #{keyspace}"
+  commands << "nodetool snapshot #{keyspace}"
+  
+  tables.each do |table|
+    table_dir = File.join( keyspace_dir, table )
+    snapshot_dir = File.join( table_dir, 'snapshots' )
+    s3_snapshot_dir = "#{s3_bucket_url}/$DATE/#{node_name}/#{keyspace}/#{table}/snapshots"
+    commands << %Q{aws s3 sync "#{snapshot_dir}" "#{s3_snapshot_dir}"}
+  end
+end
+
+%>
+
+DATE=$(date +"%Y-%m-%d-%H-%M")
+
+<%= commands.join("\n") %>

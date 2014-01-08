@@ -19,10 +19,9 @@ keyspaces.each do |keyspace, tables|
   execute("nodetool snapshot #{keyspace}")
   
   tables.each do |table|
-    puts "#{Time.now} | keyspace: #{keyspace} | table: #{table}"
     table_dir = File.join( keyspace_dir, table )
     snapshot_dir = File.join( table_dir, 'snapshots' )
     s3_snapshot_dir = "#{s3_bucket_url}/#{date}/#{node_name}/#{keyspace}/#{table}/snapshots"
-    execute(%Q{aws s3 sync "#{snapshot_dir}" "#{s3_snapshot_dir}" }) if Dir.exists?(snapshot_dir)
+    execute(%Q{aws s3 sync "#{snapshot_dir}" "#{s3_snapshot_dir}" >> backup.log }) if Dir.exists?(snapshot_dir)
   end
 end
