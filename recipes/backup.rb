@@ -1,12 +1,12 @@
 directory "/root/.aws" do
   owner 'root'
   group 'root'
-  mode 0700
+  mode 0755
   action :create
 end
 
 template "/root/.aws/config" do
-  source "aws_config.erb"
+  source "backup/aws_config.erb"
   owner "root"
   group "root"
   mode  0600
@@ -20,11 +20,11 @@ directory File.join(node["cassandra"]["conf_dir"], "backup") do
   action :create
 end
 
-template File.join(node["cassandra"]["conf_dir"], "backup/backup.sh") do
-  source "backup/backup.sh.erb"
+template File.join(node["cassandra"]["conf_dir"], "backup/backup.rb") do
+  source "backup/backup.rb.erb"
   owner node["cassandra"]["user"]
   group node["cassandra"]["user"]
-  mode  0744
+  mode  0644
 end
 
 template File.join(node["cassandra"]["conf_dir"], "backup/restore.sh") do

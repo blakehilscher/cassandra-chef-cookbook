@@ -1,4 +1,4 @@
-keyspaces=(<%= node.cassandra.backup.keyspaces.join(" ") %>)
+keyspaces=(<%= node.cassandra.backup.keyspaces.keys.join(" ") %>)
 
 S3_BUCKET_URL="s3://<%= node.cassandra.backup.bucket_name %>"
 DATE=$(date +"%Y-%m-%d-%T")

@@ -1,0 +1,28 @@
+require 'date'
+require 'json'
+
+data_dir = File.join(%Q{<%= node.cassandra.data_root_dir %>}, 'data')
+s3_bucket_url = "s3://<%= node.cassandra.backup.bucket_name %>"
+keyspaces = JSON.parse(%Q{<%= node.cassandra.backup.keyspaces.to_json %>})
+node_name = "<%= node.name %>"
+
+date = Date.today.to_s
+
+def execute(message)
+  puts "#{Time.now} | #{message}"
+  %x{#{message}}
+end
+
+keyspaces.each do |keyspace, tables|
+  keyspace_dir = File.join( data_dir, keyspace )
+  execute("nodetool clearsnapshot #{keyspace}")
+  execute("nodetool snapshot #{keyspace}")
+  
+  tables.each do |table|
+    puts "#{Time.now} | keyspace: #{keyspace} | table: #{table}"
+    table_dir = File.join( keyspace_dir, table )
+    snapshot_dir = File.join( table_dir, 'snapshots' )
+    s3_snapshot_dir = "#{s3_bucket_url}/#{date}/#{node_name}/#{keyspace}/#{table}/snapshots"
+    execute(%Q{aws s3 sync "#{snapshot_dir}" "#{s3_snapshot_dir}" }) if Dir.exists?(snapshot_dir)
+  end
+end
