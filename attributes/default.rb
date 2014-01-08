@@ -25,8 +25,14 @@ default[:cassandra] = {
   :truncate_request_timeout_in_ms => 60000,
   
   :backup => {
-    :bucket_name    => 'cassandra-archive',
-    :keyspaces      => ['system'],
+    :bucket_name          => 'cassandra-archive',
+    :access_key_id        => '',
+    :secret_access_key    => '',
+    :region               => '',
+    # keyspaces to backup
+    :keyspaces            => {
+      :system => ['local', 'schema_columnfamilies', 'schema_columns', 'schema_keyspaces'],
+    }
   },
   
   :installation_dir => "/usr/local/cassandra",

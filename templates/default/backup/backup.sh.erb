@@ -6,7 +6,6 @@ NODE_NAME="<%= node.name %>"
 CASS_DIR="<%= node.cassandra.data_root_dir %>"
 DATA_DIR="$CASS_DIR/data/"
 
-
 # for each configured keyspace
 for keyspace in ${keyspaces[@]}; do
   # clear existing snapshot
