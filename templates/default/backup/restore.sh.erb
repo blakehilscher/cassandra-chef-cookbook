@@ -4,25 +4,28 @@ S3_BUCKET_URL="s3://<%= node.cassandra.backup.bucket_name %>"
 DATE=$(date +"%Y-%m-%d-%T")
 NODE_NAME="<%= node.name %>"
 CASS_DIR="<%= node.cassandra.data_root_dir %>"
+CASS_LOG="<%= node.cassandra.log_dir %>"
 DATA_DIR="$CASS_DIR/data/"
 
 RESTORE_FROM=$1
 
+LOG_FILE="$CASS_LOG/restore.log"
+
 # stop cassandra
-echo "RESTORE: service cassandra stop"
+echo "RESTORE: service cassandra stop" >> $LOG_FILE
 service cassandra stop
 
 # move data to make way for recovery
-echo "RESTORE: mv $CASS_DIR $CASS_DIR/../cassandra-$DATE.backup"
+echo "RESTORE: mv $CASS_DIR $CASS_DIR/../cassandra-$DATE.backup" >> $LOG_FILE
 mv $CASS_DIR "$CASS_DIR/../cassandra-$DATE.backup"
 
 # for each keyspace
 for keyspace in ${keyspaces[@]}; do
-  echo "RESTORE: aws s3 sync $S3_BUCKET_URL/$RESTORE_FROM/${keyspace}/ $DATA_DIR/${keyspace}/"
+  echo "RESTORE: aws s3 sync $S3_BUCKET_URL/$RESTORE_FROM/${keyspace}/ $DATA_DIR/${keyspace}/" >> $LOG_FILE
   # make the missing directory
   mkdir -p "$DATA_DIR/${keyspace}/"
   # sync the backup data
-  aws s3 sync "$S3_BUCKET_URL/$RESTORE_FROM/${keyspace}/" "$DATA_DIR/${keyspace}/"
+  aws s3 sync "$S3_BUCKET_URL/$RESTORE_FROM/${keyspace}/" "$DATA_DIR/${keyspace}/" >> $LOG_FILE
 done
 
 # for each keyspace
@@ -30,7 +33,7 @@ for keyspace in ${keyspaces[@]}; do
   # for each data directory
   find "$DATA_DIR/${keyspace}" -maxdepth 1 -type d | while read -r dir; do
     if [ -d "${dir}/snapshots" ]; then
-      echo "RESTORE: mv ${dir}/snapshots/*/* ${dir}"
+      echo "RESTORE: mv ${dir}/snapshots/*/* ${dir}" >> $LOG_FILE
       find "${dir}/snapshots" -maxdepth 2 -type f | while read -r file; do
         basefile=$(basename $file)
         mv $file "${dir}/$basefile"
@@ -41,6 +44,3 @@ done
 
 # ensure correct permissions
 chown -R cassandra:cassandra $CASS_DIR
-# restart
-echo "RESTORE: service cassandra start"
-service cassandra start
