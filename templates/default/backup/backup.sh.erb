@@ -19,6 +19,7 @@ keyspaces.each do |keyspace, tables|
     s3_snapshot_dir = "#{s3_bucket_url}/$DATE/#{node_name}/#{keyspace}/#{table}/snapshots"
     commands << %Q{aws s3 sync "#{snapshot_dir}" "#{s3_snapshot_dir}" >> $LOG_FILE}
   end
+  commands << %Q{echo "Backup of #{keyspace} complete!"}
 end
 
 %>
