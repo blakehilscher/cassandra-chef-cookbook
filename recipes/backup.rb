@@ -33,3 +33,10 @@ template File.join(node["cassandra"]["conf_dir"], "backup/restore.sh") do
   group node["cassandra"]["user"]
   mode  0744
 end
+
+template File.join(node["cassandra"]["conf_dir"], "backup/restore_deploy.sh") do
+  source "backup/restore_deploy.sh.erb"
+  owner node["cassandra"]["user"]
+  group node["cassandra"]["user"]
+  mode  0744
+end

@@ -1,0 +1,32 @@
+CASS_DIR="<%= node.cassandra.data_root_dir %>"
+CASS_ROOT="<%= File.expand_path(File.join(node.cassandra.data_root_dir, '../')) %>"
+DATA_DIR="$CASS_DIR/data/"
+DATA_DIR_TMP="$CASS_ROOT/cassandra-downloading-restore"
+
+CASS_LOG="<%= node.cassandra.log_dir %>"
+LOG_FILE="$CASS_LOG/restore.log"
+
+DATE=$(date +"%s")
+
+if [ -d $DATA_DIR_TMP ]; then
+  
+  service cassandra stop
+
+  # move existing cassandra data to make way for recovery
+  mv $CASS_DIR "$CASS_ROOT/cassandra-$DATE.backup"
+
+  # move the restored data into place
+  mkdir -p $DATA_DIR
+  mv $DATA_DIR_TMP/* $DATA_DIR
+
+  # ensure correct permissions
+  chown -R cassandra:cassandra $CASS_DIR
+
+  service cassandra start
+
+  echo "$(date) Restore deployed!" >> $LOG_FILE
+  
+else
+  echo "$(date) Restore failed. No restore point found at: '$DATA_DIR_TMP'" >> $LOG_FILE
+  
+fi

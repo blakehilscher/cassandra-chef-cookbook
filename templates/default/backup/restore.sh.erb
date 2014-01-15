@@ -1,49 +1,47 @@
 keyspaces=(<%= node.cassandra.backup.keyspaces.keys.join(" ") %>)
 
+CASS_PLACEMENT="<%= node.name.split('-').last %>"
 S3_BUCKET_URL="s3://<%= node.cassandra.backup.bucket_name %>"
-DATE=$(date +"%Y-%m-%d-%T")
 NODE_NAME="<%= node.name %>"
+
 CASS_DIR="<%= node.cassandra.data_root_dir %>"
+CASS_ROOT="<%= File.expand_path(File.join(node.cassandra.data_root_dir, '../')) %>"
 CASS_LOG="<%= node.cassandra.log_dir %>"
 DATA_DIR="$CASS_DIR/data/"
-CASS_PLACEMENT="<%= node.name.split('-').last %>"
 
+DATA_DIR_TMP="$CASS_ROOT/cassandra-downloading-restore"
 RESTORE_FROM="$1-$CASS_PLACEMENT"
-
 LOG_FILE="$CASS_LOG/restore.log"
 
-# stop cassandra
-echo "service cassandra stop" >> $LOG_FILE
-service cassandra stop
+# move previous restore download folder out of the way
+mv $DATA_DIR_TMP "$DATA_DIR_TMP-failed-$(date +'%s')"
 
-# move data to make way for recovery
-echo "mv $CASS_DIR $CASS_DIR/../cassandra-$DATE.backup" >> $LOG_FILE
-mv $CASS_DIR "$CASS_DIR/../cassandra-$DATE.backup"
+echo "starting recovery from: $S3_BUCKET_URL/$RESTORE_FROM into $DATA_DIR_TMP" >> $LOG_FILE
 
 # for each keyspace
 for keyspace in ${keyspaces[@]}; do
-  echo "aws s3 sync $S3_BUCKET_URL/$RESTORE_FROM/${keyspace}/ $DATA_DIR/${keyspace}/" >> $LOG_FILE
+  echo "aws s3 sync $S3_BUCKET_URL/$RESTORE_FROM/${keyspace}/ $DATA_DIR_TMP/${keyspace}/" >> $LOG_FILE
   # make the missing directory
-  mkdir -p "$DATA_DIR/${keyspace}/"
+  mkdir -p "$DATA_DIR_TMP/${keyspace}/"
   # sync the backup data
-  aws s3 sync "$S3_BUCKET_URL/$RESTORE_FROM/${keyspace}/" "$DATA_DIR/${keyspace}/" >> $LOG_FILE
+  aws s3 sync "$S3_BUCKET_URL/$RESTORE_FROM/${keyspace}/" "$DATA_DIR_TMP/${keyspace}/" >> $LOG_FILE
 done
 
 # for each keyspace
 for keyspace in ${keyspaces[@]}; do
-  # for each data directory
-  find "$DATA_DIR/${keyspace}" -maxdepth 1 -type d | while read -r dir; do
+  # for each keyspace table
+  find "$DATA_DIR_TMP/${keyspace}" -maxdepth 1 -type d | while read -r dir; do
+    # if there is a snapshot directory
     if [ -d "${dir}/snapshots" ]; then
+      # move the contents of the snapshot
       echo "mv ${dir}/snapshots/*/* ${dir}" >> $LOG_FILE
       find "${dir}/snapshots" -maxdepth 2 -type f | while read -r file; do
         basefile=$(basename $file)
+        # move the snapshot to it's parent folder
         mv $file "${dir}/$basefile"
       done
     fi
   done
 done
 
-echo "$(date) Restore complete! $S3_BUCKET_URL/$RESTORE_FROM" >> $LOG_FILE
-
-# ensure correct permissions
-chown -R cassandra:cassandra $CASS_DIR
+echo "$(date) Restore downloaded! $S3_BUCKET_URL/$RESTORE_FROM" >> $LOG_FILE
