@@ -58,11 +58,13 @@ bash "ensure correct permissions on data_root_dir, commitlog_dir, log_dir" do
   ].join(';')
 end
 
-if node.cassandra.seeds_by_role == false
-  seeds = node.cassandra.seeds
-else
-  seeds = search(:node, "role:#{node["cassandra"]["seeds_by_role"]} AND chef_environment:#{node.chef_environment} NOT hostname:#{node['hostname']}").collect{|h| h['ipaddress'] } || []
-end
+# if node.cassandra.seeds_by_role == false
+#   seeds = node.cassandra.seeds
+# else
+#   seeds = search(:node, "role:#{node["cassandra"]["seeds_by_role"]} AND chef_environment:#{node.chef_environment} NOT hostname:#{node['hostname']}").collect{|h| h['ipaddress'] } || []
+# end
+
+seeds = node.cassandra.seeds
 
 %w(cassandra.yaml cassandra-env.sh).each do |f|
   template File.join(node["cassandra"]["conf_dir"], f) do
