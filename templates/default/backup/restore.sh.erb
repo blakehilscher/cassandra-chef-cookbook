@@ -6,8 +6,9 @@ NODE_NAME="<%= node.name %>"
 CASS_DIR="<%= node.cassandra.data_root_dir %>"
 CASS_LOG="<%= node.cassandra.log_dir %>"
 DATA_DIR="$CASS_DIR/data/"
+CASS_PLACEMENT="<%= node.name.split('-').last %>"
 
-RESTORE_FROM="$1-$CASSANDRA_PLACEMENT"
+RESTORE_FROM="$1-$CASS_PLACEMENT"
 
 LOG_FILE="$CASS_LOG/restore.log"
 
