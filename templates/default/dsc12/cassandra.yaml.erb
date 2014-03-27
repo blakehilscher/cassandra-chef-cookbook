@@ -692,3 +692,5 @@ internode_compression: all
 # reducing overhead from the TCP protocol itself, at the cost of increasing
 # latency if you block for cross-datacenter responses.
 inter_dc_tcp_nodelay: true
+
+auto_bootstrap: '<%= node[:cassandra][:auto_bootstrap] %>'
