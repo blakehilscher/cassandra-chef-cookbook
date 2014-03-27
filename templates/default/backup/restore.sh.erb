@@ -1,3 +1,11 @@
+# Cronjob:
+#
+# PATH=/usr/local/rbenv/shims:/usr/local/rbenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+# SHELL=/bin/bash
+# 
+# 0 21 * * * <%= node.cassandra.conf_dir %>/backup/restore.sh $(date +"%Y-%m-%d")/cassandra
+# 0 22 * * * <%= node.cassandra.conf_dir %>/backup/restore_deploy.sh
+
 keyspaces=(<%= node.cassandra.backup.keyspaces.keys.join(" ") %>)
 
 CASS_PLACEMENT="<%= node.name.split('-').last %>"

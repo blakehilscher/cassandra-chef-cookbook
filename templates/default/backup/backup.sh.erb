@@ -23,6 +23,12 @@ keyspaces.each do |keyspace, tables|
 end
 
 %>
+# Cronjob:
+#
+# PATH=/usr/local/rbenv/shims:/usr/local/rbenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+# SHELL=/bin/bash
+# 
+# 0 18 * * * <%= node.cassandra.conf_dir %>/backup/backup.sh
 
 CASS_LOG="<%= node.cassandra.log_dir %>"
 LOG_FILE="$CASS_LOG/backup.log"
