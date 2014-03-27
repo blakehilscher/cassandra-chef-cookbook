@@ -58,5 +58,5 @@ default[:cassandra] = {
   :availability_zones => {
     'us-east-1a' => 'dc1',
   }
-  :auto_bootstrap => false,
+  :auto_bootstrap => true,
 }
