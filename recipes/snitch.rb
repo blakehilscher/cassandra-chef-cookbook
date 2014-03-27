@@ -20,10 +20,6 @@ if node.cassandra.snitch == 'PropertyFileSnitch'
     variables :cass_nodes => cass_nodes
   end
   
-  service "cassandra" do
-    action :restart
-  end
-  
 end
 
 if node.cassandra.snitch == 'GossipingPropertyFileSnitch'
@@ -37,10 +33,6 @@ if node.cassandra.snitch == 'GossipingPropertyFileSnitch'
     group node.cassandra.user
     mode  0644
     variables :datacenter => datacenter, :rack => rack
-  end
-  
-  service "cassandra" do
-    action :restart
   end
   
 end
