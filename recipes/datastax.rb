@@ -41,6 +41,10 @@ bash "install package cassandra" do
   code %Q{apt-get -q -y --force-yes install #{node.cassandra.package}=#{node.cassandra.version}-1 cassandra=#{node.cassandra.version} -o Dpkg::Options::="--force-confdef"}
 end
 
+service "cassandra" do
+  action :stop
+end
+
 # ensure data_root_dir exists
 directory node.cassandra.data_root_dir do
   owner node.cassandra.user
@@ -74,9 +78,4 @@ seeds = node.cassandra.seeds
     mode  0644
     variables :seeds => seeds
   end
-end
-
-service "cassandra" do
-  supports :restart => true, :status => true
-  action [:enable, :start]
 end
