@@ -693,4 +693,4 @@ internode_compression: all
 # latency if you block for cross-datacenter responses.
 inter_dc_tcp_nodelay: true
 
-auto_bootstrap: '<%= node[:cassandra][:auto_bootstrap] %>'
+auto_bootstrap: <%= node[:cassandra][:auto_bootstrap] %>
