@@ -1,3 +1,4 @@
+name             "cassandra"
 maintainer       "Blake Hilscher"
 maintainer_email "blake@hilscher.ca"
 license          "Apache 2.0"
