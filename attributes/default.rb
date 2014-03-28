@@ -61,7 +61,7 @@ default[:cassandra] = {
   :snitch           => 'SimpleSnitch',
   :start_native_transport => true,
   :availability_zones => {
-    'us-east-1a' => 'dc1',
-  }
+    'us-east-1a' => 'dc1'
+  },
   :auto_bootstrap => true,
 }
