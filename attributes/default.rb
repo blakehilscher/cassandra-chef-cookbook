@@ -2,6 +2,10 @@ cassandra_version = "1.2.9"
 
 default[:cassandra] = {
   :cluster_name => "Test Cluster",
+  :phi_convict_threshold => 8,
+  :stream_throughput_outbound_megabits_per_sec => 100,
+  :compaction_throughput_mb_per_sec => 16,
+  :key_cache_size_in_mb => 100,
   :initial_token => "",
   :package => 'dsc12',
   :version => cassandra_version,
@@ -12,7 +16,8 @@ default[:cassandra] = {
   :user => "cassandra",
   :jvm  => {
     :xms => 32,
-    :xmx => 512
+    :xmx => 512,
+    :xss => 256
   },
   :limits => {
     :memlock => 'unlimited',
@@ -23,7 +28,7 @@ default[:cassandra] = {
   :write_request_timeout_in_ms    => 2000,
   :cas_contention_timeout_in_ms   => 1000,
   :truncate_request_timeout_in_ms => 60000,
-  
+
   :backup => {
     :bucket_name          => 'cassandra-archive',
     :access_key_id        => '',
@@ -34,7 +39,7 @@ default[:cassandra] = {
       :system => ['local', 'schema_columnfamilies', 'schema_columns', 'schema_keyspaces'],
     }
   },
-  
+
   :installation_dir => "/usr/local/cassandra",
   :bin_dir          => "/usr/local/cassandra/bin",
   :lib_dir          => "/usr/local/cassandra/lib",
@@ -46,8 +51,8 @@ default[:cassandra] = {
   :log_dir          => "/var/log/cassandra/",
   :listen_address   => node[:ipaddress],
   :rpc_address      => node[:ipaddress],
-  :max_heap_size    => nil,
-  :heap_new_size    => nil,
+  :max_heap_size    => '6144M',
+  :heap_new_size    => '600M',
   :vnodes           => false,
   :seeds            => [],
   :seeds_by_role    => false,

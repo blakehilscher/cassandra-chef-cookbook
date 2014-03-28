@@ -1,5 +1,5 @@
 placement = node.name.split('-').last
-rack = "RAC" + placement.split('.').first.to_s
+rack = "RAC"
 
 template "/etc/profile.d/cassandra.sh" do
   source "profile/cassandra.sh.erb"
